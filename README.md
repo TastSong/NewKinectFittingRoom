@@ -19,9 +19,15 @@
 16. 如果要关闭场景中的光标交互，请禁用`KinectController`游戏对象的`InteractionManager.cs`组件。如果要关闭手势（挥手换衣和举手更换衣服类型），请禁用`CategorySelector.cs`组件的相应设置。如果要关闭或更改`T型姿势`校准，请更改`KinectManager.cs`组件的`Player calibration pose`设置。
 17. 如果服装/叠加模型使用标准着色器，请:bug:将其`Rendering mode`设置为`Cutout`。
 
-## 如何在FittingRoom中启用人体和模型混合(体混合)，或禁用它以增加FPS
+## 启用人体和模型混合(体混合)，或禁用它以增加FPS
 * 如果在KinectFittingRoom场景中选择MainCamera，找到名为`UserBodyBlender.cs`的组件。
 * `UserBodyBlender.cs`组件负责将服装模型与用户身体混合。
 * 您可以启用该组件，以打开用户的身体与模型混合功能。
 * `Depth threshold`设置可用于调整到模型前面的最小距离（以米为单位）。它决定了现实世界的物体何时可见。
 * 如果场景性能（FPS）不足，并且混合模式并不重要，则可以禁用`UserBodyBlender.cs`组件以提高性能。
+
+## 替换场景彩色摄像机背景
+1. 在场景中启用`KinectController`游戏对象的`BackgroundRemovalManager.cs`组件。
+2. 确保`KinectController`的组件`KinectManager.cs`的`Compute user map`设置为`Body texture`，并启用`Compute color map`设置。
+3. 将所需的背景图像设置为场景中游戏对象`BackgroundImage1`的`RawImage`组件的纹理。
+4. 运行场景以检查它是否按预期工作。
