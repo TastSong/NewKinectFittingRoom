@@ -18,3 +18,10 @@
 15. 运行场景以确保可以在列表中选择模型并正确覆盖用户的身体。如果需要，可以进行一些实验，以找到提供最佳模型到主体叠加的比例因子和垂直偏移设置的值。
 16. 如果要关闭场景中的光标交互，请禁用`KinectController`游戏对象的`InteractionManager.cs`组件。如果要关闭手势（挥手换衣和举手更换衣服类型），请禁用`CategorySelector.cs`组件的相应设置。如果要关闭或更改`T型姿势`校准，请更改`KinectManager.cs`组件的`Player calibration pose`设置。
 17. 如果服装/叠加模型使用标准着色器，请:bug:将其`Rendering mode`设置为`Cutout`。
+
+## 如何在FittingRoom中启用人体和模型混合(体混合)，或禁用它以增加FPS
+* 如果在KinectFittingRoom场景中选择MainCamera，找到名为`UserBodyBlender.cs`的组件。
+* `UserBodyBlender.cs`组件负责将服装模型与用户身体混合。
+* 您可以启用该组件，以打开用户的身体与模型混合功能。
+* `Depth threshold`设置可用于调整到模型前面的最小距离（以米为单位）。它决定了现实世界的物体何时可见。
+* 如果场景性能（FPS）不足，并且混合模式并不重要，则可以禁用`UserBodyBlender.cs`组件以提高性能。
