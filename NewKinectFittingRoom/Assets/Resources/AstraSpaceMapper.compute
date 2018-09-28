@@ -1,0 +1,21 @@
+﻿// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel MapDepth2Space
+
+
+float depthResX;
+float depthResY;
+int depthImageLen;
+
+StructuredBuffer<float3> spaceUnitTable;
+StructuredBuffer<float> spaceDepthValues;
+RWStructuredBuffer<float3> spaceDepthCoords;
+
+
+[numthreads(64,1,1)]
+void MapDepth2Space (uint3 id : SV_DispatchThreadID)
+{
+    int idx = id.x;
+	float depth = spaceDepthValues[idx] / 1000.0;
+	spaceDepthCoords[idx] = spaceUnitTable[idx] * depth;
+}
+

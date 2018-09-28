@@ -1,0 +1,77 @@
+﻿// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel MapDepth2ColorPP
+#pragma kernel MapDepth2ColorNN
+#pragma kernel MapColor2DepthPP
+#pragma kernel MapColor2DepthNN
+
+
+float4 d2cMat0;
+float4 d2cMat1;
+
+float depthResX;
+float depthResY;
+int depthImageLen;
+
+float colorResX;
+float colorResY;
+
+StructuredBuffer<float2> depthPlaneCoords;
+StructuredBuffer<float> depthDepthValues;
+RWStructuredBuffer<float2> colorPlaneCoords;
+
+
+[numthreads(64,1,1)]
+void MapDepth2ColorPP (uint3 id : SV_DispatchThreadID)
+{
+    int idx = id.x;
+	float depth = depthDepthValues[idx];
+
+	float clrX = d2cMat0.x * depthPlaneCoords[idx].x + d2cMat0.y * depthPlaneCoords[idx].y + d2cMat0.z + d2cMat0.w / depth;
+	float clrY = d2cMat1.x * depthPlaneCoords[idx].x + d2cMat1.y * depthPlaneCoords[idx].y + d2cMat1.z + d2cMat1.w / depth;
+
+	colorPlaneCoords[idx] = float2(clrX, clrY);
+}
+
+
+[numthreads(64,1,1)]
+void MapDepth2ColorNN (uint3 id : SV_DispatchThreadID)
+{
+    int idx = id.x;
+	float depth = depthDepthValues[idx];
+
+	float clrX = d2cMat0.x * depthPlaneCoords[idx].x + d2cMat0.y * depthPlaneCoords[idx].y + d2cMat0.z + d2cMat0.w / depth;
+	float clrY = d2cMat1.x * depthPlaneCoords[idx].x + d2cMat1.y * depthPlaneCoords[idx].y + d2cMat1.z + d2cMat1.w / depth;
+
+	//int idxNN = depthImageLen - idx;
+	colorPlaneCoords[idx] = float2(colorResX - clrX - 1, colorResY - clrY - 1);
+}
+
+
+[numthreads(64,1,1)]
+void MapColor2DepthPP (uint3 id : SV_DispatchThreadID)
+{
+    int idx = id.x;
+	float depth = depthDepthValues[idx];
+
+	float clrX = d2cMat0.x * depthPlaneCoords[idx].x + d2cMat0.y * depthPlaneCoords[idx].y + d2cMat0.z + d2cMat0.w / depth;
+	float clrY = d2cMat1.x * depthPlaneCoords[idx].x + d2cMat1.y * depthPlaneCoords[idx].y + d2cMat1.z + d2cMat1.w / depth;
+
+	int clrI = (int)(clrY * colorResX + clrX);
+	colorPlaneCoords[clrI] = depthPlaneCoords[idx];
+}
+
+
+[numthreads(64,1,1)]
+void MapColor2DepthNN (uint3 id : SV_DispatchThreadID)
+{
+    int idx = id.x;
+	float depth = depthDepthValues[idx];
+
+	float clrX = d2cMat0.x * depthPlaneCoords[idx].x + d2cMat0.y * depthPlaneCoords[idx].y + d2cMat0.z + d2cMat0.w / depth;
+	float clrY = d2cMat1.x * depthPlaneCoords[idx].x + d2cMat1.y * depthPlaneCoords[idx].y + d2cMat1.z + d2cMat1.w / depth;
+
+	int clrI = (int)((colorResY - clrY - 1) * colorResX + (colorResX - clrX - 1));
+	colorPlaneCoords[clrI] = depthPlaneCoords[idx];
+}
+
+
